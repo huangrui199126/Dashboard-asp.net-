@@ -1,0 +1,70 @@
+﻿<div class="user-tracking has-permission dashboard-ajax-index" permission-rights="@One.MetTel.Domain.Entities.Common.PermissionRight.Dashboard_BrowserTracking">
+    <header class="mettel-online-user-header" style="height:30px;">
+        <h1 class="mettel-online-user-title" style="display: inline-block;">Real-time Online User</h1>
+        <div class="dashboard-inner-container" id="mettel_realtime_onlineuser_chart_selection">
+            <span class="mettel-bill-details-past-filter-compare-label">Date:</span>
+            <input type="text" id="date_selector" class="mettel-input datePicker">
+            <span class="mettel-bill-details-past-filter-compare-label">Start Hour:</span>
+            <select data-bind="options: availableStartHours,
+                           optionsText: 'OptionName',
+                           value: selectedStartHour,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            <span class="mettel-bill-details-past-filter-compare-label">End Hour:</span>
+            <select data-bind="options: availableEndHours,
+                           optionsText: 'OptionName',
+                           value: selectedEndHour,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            <span class="mettel-bill-details-past-filter-compare-label">Diveded by Intervals:</span>
+            <select data-bind="options: availableCounts,
+                           value: selectedCount,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            <input type="submit" class="mettel-button" value="OK" id="mettle_refresh_realtime_onlineuser_historychart">
+        </div>
+    </header>
+    <div id="mettel_realtime_onlineUser_historyRecord"></div>
+</div>
+
+<div class="user-tracking has-permission dashboard-ajax-index" permission-rights ="@One.MetTel.Domain.Entities.Common.PermissionRight.Dashboard_BrowserTracking">
+    <header class="mettel-online-user-header" style="height:30px;">
+        <h1 class="mettel-online-user-title" style="display: inline-block;">History Of Online User</h1>
+        <div class="dashboard-inner-container" id="mettel_onlineuser_chart_selection">
+            <span class="mettel-bill-details-past-filter-compare-label">
+                Select history by:
+            </span>
+            <select data-bind="options: availableOptions,
+                      
+                           value: selectedOption,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            <span class="mettel-bill-details-past-filter-compare-label">
+                Filtered by:
+            </span>
+            <select data-bind="options: availableFilters,
+                        
+                           value: selectedFilter,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            <span class="mettel-bill-details-past-filter-compare-label">
+                Select year:
+            </span>
+            <select data-bind="options: availableYears,
+                        
+                           value: selectedYear,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+
+
+            <span data-bind="visible: selectedOption() == 'day'">
+                <!-- Appears when you select by year -->
+                <span class="mettel-bill-details-past-filter-compare-label">
+                    Select month:
+                </span>
+                <select data-bind="options: availableMonths,
+                    
+                           value: selectedMonth,uniform:{ options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+            </span>
+            <input type="submit" class="mettel-button" value="OK" id="mettle_refresh_onlineuser_historychart">
+        </div>
+    </header>
+    <div class="mettel-bill-details-chart-container-outer">
+        <div class="mettel-browser-type-labels">
+            <div class="mettel-browser-type-label"><span class='mettel-icon-circle-filled' style='color:#2686e6;'></span> <span>Chome</span></div>
+            <div class="mettel-browser-type-label"><span class='mettel-icon-circle-filled' style='color:#3A6CB8;'></span> <span>Firefox</span></div>
+            <div class="mettel-browser-type-label"><span class='mettel-icon-circle-filled' style='color:#E35D1B;'></span> <span>IE(7,8,9,10)</span></div>
+            <div class="mettel-browser-type-label"><span class='mettel-icon-circle-filled' style='color:#eba1ad;'></span> <span>Internet Explorer 11</span></div>
+            <div class="mettel-browser-type-label"><span class='mettel-icon-circle-filled' style='color:#8AC008;'></span> <span>Safari</span></div>
+        </div>
+        <div class="mettel-onlineUser-historyRecord" id="mettel_onlineUser_historyRecord"></div>
+    </div>
+</div>

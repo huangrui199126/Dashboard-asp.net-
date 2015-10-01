@@ -1,0 +1,219 @@
+﻿@using  One.MetTel.Domain.Entities.Common;
+@{
+    Layout = "~/Views/Shared/_UpdatedLayout.cshtml";
+    Model.PageTitle = "Dashboard";
+}
+
+@section Style
+{
+    <link href="@Url.VersionedContent("~/Content/dashboard/dashboard.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.VersionedContent("~/Content/dashboard/tem-dashboard.css")" rel="stylesheet" type="text/css" />
+}
+
+@section JavaScriptBody 
+{ 
+    <script type="text/javascript" src = "@Url.VersionedContent("~/Scripts/dashboard/dashboard.js")"></script>
+    <script type="text/javascript" src="@Url.VersionedContent("~/Scripts/dashboard/tem-dashboard.js")"></script>
+    <script type="text/javascript" src="@Url.VersionedContent("~/Scripts/dashboard/user-tracking.js")"></script> 
+    <script type="text/javascript" src="@Url.VersionedContent("~/Scripts/dashboard/staffView.js")"></script>
+    <script>$(document).ready(onlineUserRecordChart());</script>
+    <script>
+
+
+        var customerCareModel = new CustomerCareModel();
+        $(function () {
+            //SiteJS.RemoveGeneralLoading();
+            initDashboard("@ContextHelper.CurrentClientID");
+            ko.applyBindings(ticketConfigModel ,$("#dashboard_ticket_config")[0]);
+            initTEMDashboard("@ContextHelper.CurrentClientID");
+            var customerCareUI = $("#customer_care_container")[0];
+            if (customerCareUI) {
+                ko.applyBindings(customerCareModel, customerCareUI);
+            }
+        });
+        
+        var ticketConfigModel = new TicketConfigModel();
+        var openTicketConfig = function(){
+            ticketConfigModel.load();
+            $("#dashboard_ticket_config").modal({title:"Open Ticket Settings",height:500});
+        };
+    </script>
+
+}
+
+<div class="mettel-dashboard mettel-content">
+    
+    <main class="mettel-dashboard-main-content">
+        
+        <div class="mettel-dashboard-page-title-container">
+            <h1 class="mettel-dashboard-page-title">Welcome @ContextHelper.UserFullName</h1>
+        </div>
+        
+        @if (ContextHelper.CurrentClientID > 0)
+        {
+        <section class="mettel-open-tickets-container has-permission dashboard-block" permission-rights="@PermissionRight.Ticket_View" data-bind="
+            openTickets: {
+                endPoints: {
+                    getOpenTicketsData: '/api/ticket/GetOpenTicketGraphData?clientid=@ContextHelper.CurrentClientID'
+            },
+            openDashboardConfig: function () {
+                console.log('Open the Open Tickets Configuration');
+                openTicketConfig();
+            },
+            openHelpDeskSection: function () {
+                console.log('Open the Help Desk Section');
+                location.href = '/helpdesk?clientid=@ContextHelper.CurrentClientID';
+            },
+            displayOpenConfigButton: true,
+                displayOpenHelpDeskLink: true
+            }">
+        </section>
+        }
+            @if (ContextHelper.CurrentClientID > 0)
+            {   
+            <div id="dashboard_billing" class="dashboard-block">
+                <section class="mettel-billing-container has-permission" permission-rights ="@PermissionRight.Dashboard_Billing_ByMonth" data-bind="
+                        billing: {
+                            endPoints: {
+                                getBillingChartData: '/api/billing/GetBillingDashboardData'
+                            },
+                            openDashboardConfig: function () {
+                                showBillingSettings();
+                            },
+                            openHelpDeskSection: function () {
+                                window.location.href = '/billinghistory?clientid=@ContextHelper.CurrentClientID';
+                            },
+                            displayOpenConfigButton: true,
+                            displayOpenHelpDeskLink: true,
+                            queryParams: { clientId: '@ContextHelper.CurrentClientID', level: 0 } }">
+                </section>
+            
+                <div id="dashboard_billing_settings" class="mettel-modal-dialog">
+                    <header class="mettel-modal-header">
+                        <h1 class="mettel-modal-header-text">Settings</h1>
+                    </header>
+                    <div class="mettel-modal-content modal-padding">
+                        <div class="mettel-form-row">
+                            <label class="mettel-label">Hierarchy Level</label>
+                            <select name="hierarchyLevel" data-bind="value:selectedLevel,
+                            options:HierarchyLevels,
+                            optionsText:'label',
+                            optionsValue:'level',
+                            uniform: {property: selectedLevel, options: {selectClass: 'mettel-combo-box', selectAutoWidth: false}}"></select>
+                        </div>
+                    </div>
+                    <div class="mettel-modal-footer background-white">
+                        <button class="mettel-primary-button" type="button" data-bind="click:saveLevel">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dashboard_billing_details" class="dashboard-block">
+                <section class="mettel-bill-details-container has-permission" permission-rights ="@PermissionRight.Dashboard_Billing_ByService" data-bind="
+                    billDetails: {
+                        endPoints: {
+                            getBillDetailsData: '/api/billing/GetBillingDetailsDashboardData'
+                        },
+                        openHelpDeskSection: function () {
+                            window.location.href = '/billinghistory?clientid=@ContextHelper.CurrentClientID';
+                        },
+                        displayOpenConfigButton: false,
+                        displayOpenHelpDeskLink: true,
+                        queryParams: {
+                            clientId: '@ContextHelper.CurrentClientID',
+                            past:3
+                        }
+                    }"></section>
+            </div>
+                
+                
+            <div id="dashboard_tem">
+                <section class="mettel-tem-container has-permission" permission-rights="@PermissionRight.Dashboard_TEM" data-bind="
+                         tem: {
+                            endPoints: {
+                                getMonthsWhenInvoicesAvailable: '/api/billing/GetMonthsWhenInvoicesAvailable?clientid=@ContextHelper.CurrentClientID',
+                                getTEMChartData: '/api/billing/GetTEMDashboardData'
+                            },
+                            queryParams: { clientId: '@ContextHelper.CurrentClientID' }
+                         }"></section>
+            </div>
+        }
+        @Html.Partial("_UserTicket")
+        @Html.Partial("_CustomerCareTracker")
+        @if (ContextHelper.CurrentClientID == 0)
+        {    
+            @Html.Partial("_OnlineUserChart")
+        }
+        @if (ContextHelper.CurrentClientID > 0) { 
+            <div class="dashboard-outer-container">
+                <div class="dashboard-inner-container">
+                    <header class="dashboard-section-header">
+                        <div >
+                            <h1 class="dashboard-section-title">Reports</h1>
+                        </div>
+                        <div class="mettel-dashboard-header-buttons-container">
+                            @*<button id="reports_config" class="mettel-dashboard-configuration-link" >
+                                <span class="mettel-dashboard-configuration-link-text">Configure</span>
+                            </button>*@    
+                            <a class="mettel-dashboard-help-desk-link" href="/reporting?clientid=@ContextHelper.CurrentClientID">
+                                <span class="mettel-dashboard-help-desk-link-text">Help Desk</span>
+                            </a>
+                        </div>
+                    </header>
+                </div>
+                <div class="dashboard-component-content">
+                    @Html.Partial("~/Views/Reporting/_Dashboard.Component.Favorite.Reports.cshtml")
+                </div>
+            </div>
+        }
+        
+
+    </main>
+</div>
+
+
+<div id ="dashboard_ticket_config" class="dashboard-ticket-config" >
+    <div class ="mettel-form-row ticket-config-combo-box">
+        <label class ="mettel-label">Last Days</label>         
+        <select data-bind ="value:lastDays,uniform:{ property:lastDays,options:{selectClass: 'mettel-combo-box',selectAutoWidth: false}}">
+            <option>30</option>
+            <option>90</option>
+            <option>180</option>
+            <option>365</option>
+        </select>
+    </div>
+    <div class="mettel-form-row calltype-typeahead">
+        <label class="mettel-label"></label>
+        <input data-mettel-class="typeahead-list" class="mettel-typeahead-list" data-bind="value: newCallType,
+    typeAhead: {
+        typeaheadUrl: '/api/ticket/calltypesuggest',
+            placeholderText: 'Add New Category',
+            stringLength:1,
+            validateInput:true,
+        selectSuggestionEvent:add
+    }">
+    </div>
+    <div class="mettel-form-row calltype-categories" >
+        <label class="mettel-label" style="vertical-align: top;text-align:left;">Categories</label>
+        <div class="calltype-list" data-bind="foreach:callTypes">
+            <div class="calltype-item">
+                <span class="calltype-value mettel-value" data-bind="text:CallTypeDesc"></span>
+                <button class="mettel-button mettel-icon-close" data-bind="click:$root.remove"></button>
+            </div>
+        </div>
+
+    </div>    
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+

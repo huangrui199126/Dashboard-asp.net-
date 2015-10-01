@@ -1,0 +1,391 @@
+﻿
+@if (ContextHelper.CurrentClientID == 0) { 
+    <!--StaffView-->
+    <section class="ticket-assignment-grid-head mettel-open-tickets dashboard-ajax-index dashboard-ajax-index">
+
+        <div class="mettelopentickets-inner">
+            <header class="mettel-open-tickets-header">
+                <div class="mettel-open-tickets-title-container">
+                    <h1 class="mettel-online-user-title" style="display: inline-block;">NEW/UNASSIGNED TICKETS</h1>
+
+                </div>
+
+            </header>
+
+
+
+
+            <div id="ticket_assignment_grid" class="ticket-assignment-grid" data-bind="
+grid: {
+    gridName: 'assets_location_details_grid',
+    endPoints: {
+        getGridData: '/Api/Ticket/GetAssignmentGridData/'
+    },
+    queryParams: {
+        viewType:viewType,
+            rows:10
+    },
+
+    frozenHeader: true,
+     loadButtons:true,
+     disabledAutoHeight:true,
+    autoHideLoadButton:true,
+    customColumnTemplates: {
+        'TicketStatusName':'custom_column_ticket_status',
+         'CategoryDesc':'custom_column_ticket',
+         'ClientName':'custom_column_company',
+          'Escalations':'custom_column_escalation',
+        'SLAEscalationNotes':'custom_column_menu'
+    }
+}">
+
+
+            </div>
+
+
+
+        </div>
+    </section>
+
+
+
+       <!--TicketView-->
+    <section class="ticket-assignment-grid-head mettel-open-tickets dashboard-ajax-index">
+
+        <div class="mettelopentickets-inner">
+            <header class="mettel-open-tickets-header">
+                <div class="mettel-open-tickets-title-container">
+                    <h1 class="mettel-online-user-title" style="display: inline-block;">IN-WORK TICKETS</h1>
+                </div>
+            </header>
+
+
+
+
+            <div id="ticket_assignment_grid_me" class="ticket-assignment-grid" data-bind="
+    grid: {
+        gridName: 'assets_location_details_grid_me',
+        endPoints: {
+            getGridData: '/Api/Ticket/GetAssignmentGridData/'
+        },
+        queryParams: {
+            viewType:viewType,
+            rows:10
+        },
+
+        frozenHeader: true,
+        loadButtons:true,
+        disabledAutoHeight:true,
+        autoHideLoadButton:true,
+        customColumnTemplates: {
+            'TicketStatusName':'custom_column_ticket_status',
+             'CategoryDesc':'custom_column_ticket',
+             'ClientName':'custom_column_company',
+              'Escalations':'custom_column_escalation',
+            'SLAEscalationNotes':'custom_column_menu'
+        }
+    }">
+
+
+            </div>
+
+
+
+        </div>
+    </section>
+
+ <!--ManagerView-->
+    <section class="ticket-assignment-grid-head mettel-open-tickets dashboard-ajax-index">
+
+        <div class="mettelopentickets-inner">
+            <header class="mettel-open-tickets-header">
+                <div class="mettel-open-tickets-title-container">
+                    <h1 class="mettel-online-user-title" style="display: inline-block;">Team</h1>
+                </div>
+            </header>
+
+
+
+
+            <div id="ticket_assignment_grid_ma" class="ticket-assignment-grid" data-bind="
+    grid: {
+        gridName: 'assets_location_details_grid_ma',
+        endPoints: {
+            getGridData: '/Api/Ticket/GetAssignmentGridData/'
+        },
+        queryParams: {
+            viewType:viewType,
+            rows:10
+        },
+
+        frozenHeader: true,
+        loadButtons:true,
+        disabledAutoHeight:true,
+        autoHideLoadButton:true,
+        customColumnTemplates: {
+            'TicketStatusName':'custom_column_ticket_status',
+             'CategoryDesc':'custom_column_ticket',
+             'ClientName':'custom_column_company',
+              'Escalations':'custom_column_escalation',
+            'SLAEscalationNotes':'custom_column_menu',
+            'AssignToName':'custom_column_person'
+        }
+    }">
+
+
+            </div>
+
+
+
+        </div>
+    </section>
+}
+
+
+
+<!--change specialities dialog-->
+<div id="skillSetChange" style="display:none;">
+    <div class="upload-photo-header">
+        <div class="mettel-dialog-header-left">
+            <span class="mettel-modal-header-text">
+                CURRENT
+            </span>
+        </div>
+        <div class="mettel-dialog-header-right">
+            <span class="mettel-modal-header-text">
+                AVAILABLE
+            </span>
+        </div>
+    </div>
+    <div class="mettle-update-photo">
+        <div class="mettel-current-photo-block">
+            
+        </div>
+        <div class="mettel-upload-photo-block">
+            
+        </div>
+    </div>
+    <nav class="mettel-button-bar upload-photo-footer" style="background:#ededed">
+        <button class="mettel-button mettel-primary-button" data-bind="click:save,disable:imageName()==''">
+            Save
+        </button>
+    </nav>
+</div>
+
+<!-- status icon is a set of four, use name as the class -->
+<script type="text/html" id="custom_column_person">
+    <div class="mettel-grid-cell-inner" data-bind="attr: { title: $data.value }">
+        <button class="mettel-person-button" data-bind="click:function(){
+
+    var callback = function (imageName) {
+         var data = cell.row.data();
+                    data.AssignToImage = imageName;
+                    cell.row.data(data);
+    };
+    userImageModel.open({name:cell.row.data().AssignToName,image:cell.row.data().AssignToImage,dirId:cell.row.data().AssignToDirId,callback:callback,width:200,height:200});
+
+
+}">
+            <img class="mettel-person-img" data-bind="attr:{src:cell.row.data().AssignToImage!=''?'/images/user/200x200/'+cell.row.data().AssignToImage:'/images/mettel-user-default-photo.png'}">
+        </button>
+            <div class="mettel-tickets-count" data-bind="text:cell.row.originalGroupLength"></div>
+
+            <button class="mettel-button-chat " data-bind="click:function(){SiteJS.MessageHub.notificationsModel.sendPrivateMessage(cell.row.data().AssignToName,'212');}"><span class="mettel-icon-chat-filled"></span></button>
+        <button class="mettel-button-setting " data-bind="click:function(){ $('#skillSetChange').modal({ title: 'AVATAR FOR ' + cell.row.data().AssignToName, }); }"><span class="mettel-icon-gear-alt"></span></button>
+            <div class="mettel-grid-cell-inner mettel-person-detail" data-bind="attr: { title: cell.value }">
+                <span class="grid-cell-text" data-bind="text: cell.value"></span>
+                <br />
+                <span class="grid-cell-subtext" data-bind="text: cell.row.data().UserSkillSets,attr: { title: cell.row.data().UserSkillSets }"></span>
+
+            </div>
+</div>
+</script>
+
+
+
+    <script type="text/html" id="custom_column_ticket_status">
+        <div class="mettel-grid-cell-inner mettel-ticket-cell-container">
+            <span class="mettel-ticket-status-complete" data-bind="visible:cell.value!='',css: cell.row.data().TicketStatusName.toLowerCase(), text: cell.row.data().TicketStatusName"></span>
+</div>
+    </script>
+
+    <!--a cell with two lines-->
+    <script type="text/html" id="custom_column_ticket">
+
+        <div class="mettel-grid-cell-inner" data-bind="attr: { title: $data.value }">
+            <span class="grid-cell-text" data-bind="text: cell.value"></span>
+            <br />
+            <span class="grid-cell-subtext" data-bind="text: cell.row.data().CallTicketID"></span>
+        </div>
+    </script>
+
+    <!--a cell with two lines-->
+    <script type="text/html" id="custom_column_company">
+
+        <div class="mettel-grid-cell-inner" data-bind="attr: { title: $data.value }">
+            <span class="grid-cell-text" data-bind="text: cell.value"></span>
+            <br />
+            <span class="grid-cell-subtext" data-bind="text: cell.row.data().ClientID"></span>
+        </div>
+    </script>
+
+    <!--the  row ellipsis of Snapshot and View/Work->link to helpDesk-->
+    <script type="text/html" id="custom_column_menu">
+        <div class="mettel-grid-cell-inner custom-column-menu" data-bind="visible:cell.row.data().Age!=''">
+            <div data-bind="gridHoverMenu: '.context-menu-container'" style="display: inline-block;">
+                <button class="mettel-button-icon mettel-icon-more">
+                    <span class="mettel-accessible-text">More</span>
+                </button>
+                <div class="context-menu-container">
+                    <ul>
+                        <li class="context-menu-item-container">
+                            <button class="context-menu-item" data-bind="click:function(){
+                                        getSnapShot(cell.row.data().CallTicketID,cell.row,$root);
+                                        $('#snapshot').modal({title:'Ticket '+cell.row.data().CallTicketID});
+                                    }" style="background:inherit">
+                                <span>Snapshot</span>
+                            </button>
+                        </li>
+                     
+                        <li class="context-menu-item-container">
+                            <button class="context-menu-item"
+                                    data-bind="click:function(){window.open('/helpdesk?clientid=' + cell.row.data().ClientID + '&ticketId=' + cell.row.data().CallTicketID,'_blank');}">
+                                View/Work
+                            </button>
+                        </li>
+                    
+                        @*<li class="context-menu-item-container" data-bind="visible:$root.viewType == 'StaffView'">
+                            <button class="context-menu-item" data-bind="click:function(){ ticketAssignModel.load(cell,$root,$parents[1]);}">
+                                <span>Assign</span>
+                            </button>
+                        </li>*@
+                        <li class="context-menu-item-container" data-bind="visible:$root.viewType == 'ManagerView'">
+                            <button class="context-menu-item" data-bind="click:function(){ ticketAssignModel.load(cell,$root,$parents[1]);}">
+                                <span>Re-Assign</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <div id="snapshot" style="display:none;">
+        <div class="snapshot">
+            <div id="snapshot_info" class="snapshot-info">
+                <section class="mettel-tab-content mettel-state-active" data-mettel-class="tab-content">
+
+                    <ul class="mettel-key-value-list">
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">SCORE</span>
+                            <span class="mettel-value" data-bind="html:score()?score():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">COMPANY</span>
+                            <span class="mettel-value" data-bind="html:company()?company():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">TICKET</span>
+                            <span class="mettel-value" data-bind="html:ticket()?ticket():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">ESCALATIONS</span>
+                            <span class="mettel-value mettel-value-icon-list">
+                                @*the margin is bounded with the icon instead of grid-cell-icon*@
+                                <span class="grid-cell-icon" data-bind="css:{'mettel-icon-escalation-manager':HasEscalatedToManager()}"></span>
+                                <span class="grid-cell-icon" data-bind="css:{'mettel-icon-escalation-sla':TimeEscalated()}"></span>
+                                <span class="grid-cell-icon" data-bind="css:{'mettel-icon-escalation-time':SLAEscalated()}"></span>
+                            </span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">AGE</span>
+                            <span class="mettel-value" data-bind="html:age()?age():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">LAST TOUCH</span>
+                            <span class="mettel-value" data-bind="html:lastTouch()?lastTouch():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">PON</span>
+                            <span class="mettel-value" data-bind="html:pon()?pon():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                        <li class="mettel-key-value-list-row">
+                            <span class="mettel-key">PON STATUS</span>
+                            <span class="mettel-value" data-bind="html:ponStatus()?ponStatus():'<span class=\'snapshot-na\'>NA</span>'">Value</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <div id="snapshot_notes" class="snapshot-notes">
+                <ol class="mettel-ticket-note-day-list" data-bind="template: { name: 'dashboard-snapshot-noteDay-template', foreach: noteDays() }"></ol>
+            </div>
+        </div>
+
+     
+            <nav class="mettel-button-bar snapshot-footer" style="background:#ededed">
+            <button class="mettel-button mettel-primary-button"
+                    data-bind="click:function(){window.open('/helpdesk?clientid=' + clientID() + '&ticketId=' + ticketID(),'_blank');}">
+                View/Work
+            </button>
+            @* the left right selection is bounded with the pre,next in the model *@
+            <span data-bind="css:{ 'mettel-icon-caret-right': next()!=-1},click:getNextSnapShot"></span>
+            <span data-bind="css:{ 'mettel-icon-caret-left': pre()!=-1},click:getPreSnapShot"></span>
+</nav>
+     
+    </div>
+
+<div id="assign_modal" style="display:none;">
+    <select data-bind="options:assignToList,optionsText:'FullName',optionsValue:'DirID',value:assignTo,uniform:{  options:{selectClass: 'mettel-combo-box',selectAutoWidth: false}}"></select>
+    <nav class="mettel-button-bar" style="padding:10px;">
+        <button class="mettel-primary-button" data-bind="click:assign">Assign</button>
+    </nav>
+</div>
+
+
+
+    @* author:Xin Wan  *@
+    <script type="text/html" id="dashboard-snapshot-noteDay-template">
+        <li class="mettel-ticket-note-day">
+            <time class="mettel-ticket-note-day-date-container" data-bind="attr: { datetime: date() }">
+                <span class="mettel-ticket-note-day-month" data-bind="month: date()"></span>
+                <span class="mettel-ticket-note-day-date" data-bind="dayOfMonth: date()"></span>
+            </time>
+            <ul class="mettel-ticket-note-day-notes-list" data-bind="foreach: { data: notes, as: 'note' }">
+                <li class="mettel-ticket-note-day-note">
+
+                    <h2 class="mettel-ticket-note-day-note-title" data-bind="text: note.title"></h2>
+                    <p class="mettel-ticket-note-day-note-text">
+                        <span data-bind="if: note.isPrivate">
+                            <strong class="mettel-ticket-note-private-indicator">
+                                <span class="mettel-accessible-text">Private note</span>
+                            </strong>
+                        </span>
+                        <span data-bind="text: note.notes"></span>
+                    </p>
+                    <div class="mettel-ticket-note-day-note-author-time">
+                        <span data-bind="text: note.user"></span>
+                        at
+                        <time data-bind="attr: { datetime: note.timestamp }, time: note.timestamp"></time>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </script>
+
+
+
+
+
+    <script type="text/html" id="custom_column_escalation">
+        @* the title will be rendered as the tooltip by default *@
+        <div class="mettel-grid-cell-inner" data-bind="attr: { title: $data.value }">
+            <span class="grid-cell-icon" title="Escalation-Manager" data-bind="css:{'mettel-icon-escalation-manager':cell.row.data().ManualEscalationNotes !==''}"></span>
+            <span class="grid-cell-icon" title="Escalation-SLA" data-bind=" css:{'mettel-icon-escalation-sla':cell.row.data().SLAEscalationNotes !='' }"></span>
+            <span class="grid-cell-icon" title="Escalation-Time" data-bind=" css:{'mettel-icon-escalation-time':cell.row.data().TimeEscalationNotes !='' }"></span>
+
+        </div>
+    </script>
+
+
+ 

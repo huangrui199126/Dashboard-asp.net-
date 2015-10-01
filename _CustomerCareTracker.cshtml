@@ -1,0 +1,20 @@
+﻿<section class="mettel-customer-care-container" hidden id="customer_care_container" data-bind="
+    customerCare: {
+        endPoints: {
+            getCustomerCareData: '/api/ticket/GetCustomerCareData',
+            getTicketData: '/api/customer-care-tickets'
+        },
+        openDashboardConfig: function () {
+            console.log('Open the Customer Care Configuration');
+        },
+        openHelpDeskSection: function () {
+            console.log('Open the Help Desk Section');
+        },
+        displayOpenConfigButton: true,
+        displayOpenHelpDeskLink: true,
+        queryParams: {
+            clientId: '30843'
+        }
+    }"></section>
+
+
